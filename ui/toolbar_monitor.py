@@ -2,7 +2,6 @@ from PySide6.QtCore import Signal, Qt
 from PySide6.QtWidgets import (
     QAbstractButton,
     QButtonGroup,
-    QSpinBox,
 )
 
 from structs.enumtype import XAxisRange
@@ -11,19 +10,7 @@ from widgets.buttons import (
     TradingCheckButton,
     TradingRadioButton,
 )
-from widgets.container import (
-    Container,
-    Frame,
-    HPad,
-)
-from widgets.labels import (
-    LabelToolBar,
-    StockPrice,
-)
-from widgets.layout import (
-    HBoxLayout,
-    VBoxLayout,
-)
+from widgets.labels import LabelToolBar
 from widgets.toolbar import ToolBar
 
 

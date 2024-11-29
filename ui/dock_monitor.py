@@ -23,7 +23,7 @@ class DockMonitor(QDockWidget):
     csvSelected = Signal(str)
     debugEnabled = Signal(bool)
     debugPlay = Signal()
-    debugSimulation = Signal()
+    debugReplay = Signal()
     pickleSelected = Signal(str)
 
     def __init__(self, info: WebInfoRakuten):
@@ -87,12 +87,12 @@ class DockMonitor(QDockWidget):
         layout_debug.addWidget(but_debug_reset)
 
         # _____________________________________________________________________
-        # for Simulation icon
-        self.but_debug_sim = but_debug_sim = QPushButton()
-        but_debug_sim.setIcon(self.get_builtin_icon('SP_DialogApplyButton'))
-        but_debug_sim.clicked.connect(self.debugSimulation.emit)
-        but_debug_sim.setDisabled(True)
-        layout_debug.addWidget(but_debug_sim)
+        # for Replay icon
+        self.but_debug_replay = but_debug_replay = QPushButton()
+        but_debug_replay.setIcon(self.get_builtin_icon('SP_ArrowRight'))
+        but_debug_replay.clicked.connect(self.debugReplay.emit)
+        but_debug_replay.setDisabled(True)
+        layout_debug.addWidget(but_debug_replay)
 
         # _____________________________________________________________________
         # combobox for tickers
@@ -112,7 +112,6 @@ class DockMonitor(QDockWidget):
         # stop monitoring
         self.but_stop = but_stop = TradingButton('終了')
         but_stop.setFunc('stop')
-        # but_stop.setEnabled(True)
         but_stop.clicked.connect(self.clickedStop.emit)
         layout.addWidget(but_stop)
 
@@ -155,7 +154,6 @@ class DockMonitor(QDockWidget):
             self.but_start.setDisabled(True)
             #
             self.but_debug_folder.setEnabled(True)
-            # self.but_debug_play.setEnabled(True)
             #
             self.debugEnabled.emit(True)
         else:
@@ -172,7 +170,7 @@ class DockMonitor(QDockWidget):
         self.but_debug_play.setEnabled(state)
         self.but_debug_stop.setEnabled(state)
         self.but_debug_reset.setEnabled(state)
-        self.but_debug_sim.setEnabled(state)
+        self.but_debug_replay.setEnabled(state)
 
     def setButtonStatus(self, name: str, state: bool):
         if name == 'start':
