@@ -144,9 +144,14 @@ class MainMonitor(QMainWindow):
         self.dock.setDebugState()
 
     def on_debug_play(self):
+        if not self.debug:
+            return
+
         self.chart.plot(self.df)
 
     def on_debug_simulation(self):
+        if not self.debug:
+            return
         pass
 
     # _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
