@@ -1,3 +1,5 @@
+import datetime
+
 import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
 from matplotlib import dates as mdates
@@ -9,7 +11,11 @@ from matplotlib.figure import Figure
 from matplotlib.ticker import MultipleLocator
 import pandas as pd
 
-from funcs.plot import clear_axes, set_xaxis_limits, refresh_draw
+from funcs.plot import (
+    clear_axes,
+    refresh_draw,
+    set_xaxis_limits,
+)
 from funcs.sci import get_smoothing
 from structs.web_info import WebInfoRakuten
 
@@ -124,13 +130,13 @@ class ChartTechnical(FigureCanvas):
                 df_tail = df.tail(1)
                 y = df_tail.iloc[0, 0]
                 self.ax.set_ylim(y - self.YHALFDELTA, y + self.YHALFDELTA)
-            self.ax.grid(which='major', linestyle='-', linewidth=0.75, color='gray')
             self.ax.yaxis.set_major_locator(MultipleLocator(self.YMAJORTICK))
             self.ax.yaxis.set_minor_locator(MultipleLocator(self.YMINORTICK))
-            self.ax.grid(which='minor', linestyle='dotted', linewidth=0.75, color='gray')
         else:
             self.ax.set_ylim(None, None)
 
+        self.ax.grid(which='major', linestyle='-', linewidth=0.75, color='gray')
+        self.ax.grid(which='minor', linestyle='dotted', linewidth=0.75, color='gray')
         self.ax.grid(True, which='both')
 
         # _____________________________________________________________________

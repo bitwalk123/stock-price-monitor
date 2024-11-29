@@ -42,6 +42,11 @@ def remove_axes(fig: Figure):
     for ax in axs:
         ax.remove()
 
+def get_x_minor_tick_interval(info: WebInfoRakuten)->int:
+    if info.getXAxisRange() == XAxisRange.DAY:
+        return 10
+    else:
+        return 5
 
 def set_xaxis_limits(ax: axes.Axes, info: WebInfoRakuten):
     """Set X axis limits

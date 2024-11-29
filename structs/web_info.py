@@ -54,7 +54,7 @@ class WebInfoRakuten:
     ymd = str(dt_now.date())
     dt_start = pd.to_datetime('%s 09:00:00' % ymd)
     dt_end = pd.to_datetime('%s 15:30:00' % ymd)
-    dt_noon1 = pd.to_datetime('%s 11:31:00' % ymd)
+    dt_noon1 = pd.to_datetime('%s 11:30:00' % ymd)
     dt_noon2 = pd.to_datetime('%s 12:30:00' % ymd)
     dt_ca = pd.to_datetime('%s 15:25:00' % ymd)
 
