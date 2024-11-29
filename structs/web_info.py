@@ -48,7 +48,7 @@ class WebInfoRakuten:
         '三菱ＵＦＪフィナンシャルＧ': '8306'
     }
 
-    dir_result = 'result'  # 取得した株価情報 (pickle) の保存先
+    dir_result = 'results'  # 取得した株価情報 (pickle) の保存先
 
     dt_now = datetime.datetime.now()
     ymd = str(dt_now.date())

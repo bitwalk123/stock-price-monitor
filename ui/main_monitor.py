@@ -1,13 +1,12 @@
 import pandas as pd
 
 from PySide6.QtCore import QThreadPool, Qt
-from PySide6.QtGui import QCloseEvent, QIcon
+from PySide6.QtGui import QCloseEvent
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QMainWindow
 from selenium import webdriver
 from selenium.common import WebDriverException
 
-from funcs.sim import sim_get_ohlc, sim_transaction
 from process.proc_11_start import Proc11Start
 from process.proc_12_monitor import Proc12Monitor
 from process.proc_13_stop import Proc13Stop
@@ -131,7 +130,7 @@ class MainMonitor(QMainWindow):
         pd.set_option('display.max_rows', None)
         pd.set_option('display.max_columns', None)
         print(df_trade)
-        self.chart.setTrade(df_trade)
+        self.chart.setBuySell(df_trade)
 
     def on_debug_pickle(self, filename: str):
         if not self.debug:
@@ -146,24 +145,9 @@ class MainMonitor(QMainWindow):
 
     def on_debug_play(self):
         self.chart.plot(self.df)
-        # df_tail = self.df.tail(1)
-        # price = str(df_tail.iloc[0, 0])
-        # self.toolbar.showPrice(price)
 
     def on_debug_simulation(self):
-        df1, df2 = sim_get_ohlc(self.df, self.info)
-        if len(df1) == 0:
-            return
-        df2 = df2[(df2.index < self.info.dt_ca) | (df2.index == self.info.dt_end)]
-
-        print('前場')
-        total1 = sim_transaction(df1)
-        print('収益', total1)
-        print('\n後場')
-        total2 = sim_transaction(df2)
-        print('収益', total2)
-        print('\n---')
-        print('総収益', total1 + total2)
+        pass
 
     # _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     #  START PROCESS

@@ -42,7 +42,6 @@ def get_excel_from_url(url) -> pd.DataFrame:
 
     return df_excel
 
-
 def get_standard_icon(parent: QObject, name_pixmap: str) -> QIcon:
     """Get Standard Pixmap and convert QIcon instance
 

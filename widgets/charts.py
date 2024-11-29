@@ -10,15 +10,14 @@ from matplotlib.ticker import MultipleLocator
 import pandas as pd
 
 from funcs.plot import clear_axes, set_xaxis_limits, refresh_draw
-from funcs.sci import get_smoothing, resample_1m_ohlc, resample_3m_ohlc
+from funcs.sci import get_smoothing
 from structs.web_info import WebInfoRakuten
-from tech.psar import parabolic_sar
 
 FONT_PATH = 'fonts/RictyDiminished-Regular.ttf'
 
 
 class ChartTechnical(FigureCanvas):
-    YHALFDELTA = 200
+    YHALFDELTA = 250
     YPAD = 10
     YMAJORTICK = 50
     YMINORTICK = 10
@@ -30,7 +29,7 @@ class ChartTechnical(FigureCanvas):
 
         self.info = info
         self.df = pd.DataFrame()
-        self.df_trade = pd.DataFrame() # 実際に取引した結果
+        self.df_order = pd.DataFrame() # 実際に取引した結果
 
         # font setting
         fm.fontManager.addfont(FONT_PATH)
@@ -63,18 +62,9 @@ class ChartTechnical(FigureCanvas):
         df1_s = get_smoothing(df1)
         df2_s = get_smoothing(df2)
 
-        # 1min OHLC
-        df1_ohlc_1m = resample_1m_ohlc(df1)
-        df2_ohlc_1m = resample_1m_ohlc(df2)
-
-        # 3min OHLC
-        df1_ohlc_3m = resample_3m_ohlc(df1_s)
-        df2_ohlc_3m = resample_3m_ohlc(df2_s)
-
         # ---------------------------------------------------------------------
         #  PLOT
         # ---------------------------------------------------------------------
-        # _____________________________________________________________________
         # Raw data line
         for df_half in [df1, df2]:
             if len(df_half) > 0:
@@ -93,52 +83,6 @@ class ChartTechnical(FigureCanvas):
                     df_s,
                     linewidth=1,
                     color='black'
-                )
-
-        # _____________________________________________________________________
-        # Parabolic SAR 1min
-        for df_ohlc in [df1_ohlc_1m, df2_ohlc_1m]:
-            if len(df_ohlc) > 3:
-                parabolic_sar(df_ohlc)
-                bull = df_ohlc.loc[df_ohlc['Trend'] == 1]['PSAR']
-                self.ax.scatter(
-                    x=bull.index,
-                    y=bull,
-                    marker='o',
-                    s=30,
-                    facecolors='none',
-                    edgecolors='red'
-                )
-                bear = df_ohlc.loc[df_ohlc['Trend'] == 0]['PSAR']
-                self.ax.scatter(
-                    x=bear.index,
-                    y=bear,
-                    marker='o',
-                    s=30,
-                    facecolors='none',
-                    edgecolors='blue'
-                )
-
-        # _____________________________________________________________________
-        # Parabolic SAR 3min
-        for df_ohlc in [df1_ohlc_3m, df2_ohlc_3m]:
-            if len(df_ohlc) > 3:
-                parabolic_sar(df_ohlc)
-                bull = df_ohlc.loc[df_ohlc['Trend'] == 1]['PSAR']
-                self.ax.scatter(
-                    x=bull.index,
-                    y=bull,
-                    marker='^',
-                    s=10,
-                    c='darkmagenta',
-                )
-                bear = df_ohlc.loc[df_ohlc['Trend'] == 0]['PSAR']
-                self.ax.scatter(
-                    x=bear.index,
-                    y=bear,
-                    marker='v',
-                    s=10,
-                    c='darkcyan',
                 )
 
         # _____________________________________________________________________
@@ -190,22 +134,22 @@ class ChartTechnical(FigureCanvas):
         self.ax.grid(True, which='both')
 
         # _____________________________________________________________________
-        # show trading result if exists
-        if len(self.df_trade) > 0:
-            self.show_trade()
+        # show order result if exists
+        if len(self.df_order) > 0:
+            self.show_buysell()
 
         # _____________________________________________________________________
         # Refresh drawings
         refresh_draw(self.fig)
 
-    def setTrade(self, df_trade: pd.DataFrame):
-        self.df_trade = df_trade
+    def setBuySell(self, df_trade: pd.DataFrame):
+        self.df_order = df_trade
 
-    def show_trade(self):
-        for idx in self.df_trade.index:
-            x = self.df_trade.loc[idx]['time']
-            buysell = self.df_trade.loc[idx]['buysell']
-            price = self.df_trade.loc[idx]['unitprice']
+    def show_buysell(self):
+        for idx in self.df_order.index:
+            x = self.df_order.loc[idx]['time']
+            buysell = self.df_order.loc[idx]['buysell']
+            price = self.df_order.loc[idx]['unitprice']
 
             try:
                 y = float(price.replace(',', ''))
@@ -220,8 +164,8 @@ class ChartTechnical(FigureCanvas):
                 else:
                     acolor = '#000'
 
-                self.ax[0].scatter(x, y, 30, c=acolor)
-                self.ax[0].annotate(
+                self.ax.scatter(x, y, 30, c=acolor)
+                self.ax.annotate(
                     msg,
                     xy=(x, y),
                     size=9,
