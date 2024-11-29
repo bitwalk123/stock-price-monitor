@@ -109,12 +109,12 @@ class Proc12Monitor(ProcessBase):
             ticker = self.info.getTickerTarget()
             pkl = get_result_pkl_filename(ticker)
             if os.path.exists(pkl):
-                print('overwrote %s' % pkl)
+                print('【上書保存】 %s' % pkl)
             else:
-                print('saved %s' % pkl)
+                print('【新規保存】 %s' % pkl)
             self.df.to_pickle(pkl)
         else:
-            print('not saved due to no data!')
+            print('【保存データなし】')
 
         self.processFinished.emit()
 
