@@ -1,7 +1,6 @@
 import datetime
 import pandas as pd
 
-from funcs.tide import get_ymd
 from structs.enumtype import XAxisRange
 
 
@@ -87,7 +86,7 @@ class WebInfoRakuten:
         self.ticker_target = ticker_target
 
     def setYMD(self, dt):
-        ymd = get_ymd(dt)
+        ymd = str(dt.date())
         self.dt_start = pd.to_datetime('%s 09:00:00' % ymd)
         self.dt_end = pd.to_datetime('%s 15:30:00' % ymd)
         self.dt_noon1 = pd.to_datetime('%s 11:31:00' % ymd)
