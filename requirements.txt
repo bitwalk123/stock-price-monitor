@@ -1,0 +1,13 @@
+backports.tarfile
+importlib-metadata
+jaraco.collections
+matplotlib
+pandas
+pip-chill
+pip-review
+platformdirs
+pyside6
+pysocks
+scipy
+selenium
+tomli
