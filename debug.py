@@ -1,5 +1,5 @@
 import pandas as pd
-from PySide6.QtCore import QObject
+from PySide6.QtCore import QObject, QTimer
 
 from structs.web_info import WebInfoRakuten
 from widgets.charts import ChartTechnical
@@ -13,6 +13,16 @@ class DebugObj(QObject):
         self.info = info
         self.chart = chart
         self.df: pd.DataFrame | None = None
+        # Timer related
+        self.timer = QTimer(self)
+        self.counter = 0
+
+    def loop_play(self):
+        if self.counter < len(self.df):
+            self.chart.plot(self.df.iloc[0:self.counter + 1])
+            self.counter += 1
+        else:
+            self.timer.stop()
 
     def play(self):
         self.chart.plot(self.df)
@@ -51,4 +61,5 @@ class DebugObj(QObject):
         self.info.setYMD(dt)
 
     def replay(self):
-        pass
+        self.timer.timeout.connect(self.loop_play)
+        self.timer.start(500)
