@@ -58,7 +58,7 @@ class MainMonitor(QMainWindow):
         dock.csvSelected.connect(self.on_debug_csv)
         dock.debugEnabled.connect(self.on_debug)
         dock.debugPlay.connect(self.on_debug_play)
-        dock.debugReplay.connect(self.on_debug_replay)
+        dock.debugPlot.connect(self.on_debug_plot)
         dock.pickleSelected.connect(self.on_debug_pickle)
         self.addDockWidget(
             Qt.DockWidgetArea.RightDockWidgetArea,
@@ -124,10 +124,10 @@ class MainMonitor(QMainWindow):
             return
         self.debug.play()
 
-    def on_debug_replay(self):
+    def on_debug_plot(self):
         if self.debug is None:
             return
-        self.debug.replay()
+        self.debug.plot()
 
     # _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     #  START PROCESS

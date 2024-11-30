@@ -23,7 +23,7 @@ class DockMonitor(QDockWidget):
     csvSelected = Signal(str)
     debugEnabled = Signal(bool)
     debugPlay = Signal()
-    debugReplay = Signal()
+    debugPlot = Signal()
     pickleSelected = Signal(str)
 
     def __init__(self, info: WebInfoRakuten):
@@ -87,12 +87,12 @@ class DockMonitor(QDockWidget):
         layout_debug.addWidget(but_debug_reset)
 
         # _____________________________________________________________________
-        # for Replay icon
-        self.but_debug_replay = but_debug_replay = QPushButton()
-        but_debug_replay.setIcon(self.get_builtin_icon('SP_ArrowRight'))
-        but_debug_replay.clicked.connect(self.debugReplay.emit)
-        but_debug_replay.setDisabled(True)
-        layout_debug.addWidget(but_debug_replay)
+        # for Plot All icon
+        self.but_debug_plot = but_debug_plot = QPushButton()
+        but_debug_plot.setIcon(self.get_builtin_icon('SP_ArrowRight'))
+        but_debug_plot.clicked.connect(self.debugPlot.emit)
+        but_debug_plot.setDisabled(True)
+        layout_debug.addWidget(but_debug_plot)
 
         # _____________________________________________________________________
         # combobox for tickers
@@ -170,7 +170,7 @@ class DockMonitor(QDockWidget):
         self.but_debug_play.setEnabled(state)
         self.but_debug_stop.setEnabled(state)
         self.but_debug_reset.setEnabled(state)
-        self.but_debug_replay.setEnabled(state)
+        self.but_debug_plot.setEnabled(state)
 
     def setButtonStatus(self, name: str, state: bool):
         if name == 'start':

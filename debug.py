@@ -24,7 +24,7 @@ class DebugObj(QObject):
         else:
             self.timer.stop()
 
-    def play(self):
+    def plot(self):
         self.chart.plot(self.df)
 
     def readCSV(self, filename: str):
@@ -60,6 +60,6 @@ class DebugObj(QObject):
         dt = self.df.index[0]
         self.info.setYMD(dt)
 
-    def replay(self):
+    def play(self):
         self.timer.timeout.connect(self.loop_play)
         self.timer.start(500)
