@@ -73,18 +73,18 @@ class DockMonitor(QDockWidget):
         layout_debug.addWidget(but_debug_play)
 
         # _____________________________________________________________________
+        # for PAUSE icon
+        self.but_debug_pause = but_debug_pause = QPushButton()
+        but_debug_pause.setIcon(self.get_builtin_icon('SP_MediaPause'))
+        but_debug_pause.setDisabled(True)
+        layout_debug.addWidget(but_debug_pause)
+
+        # _____________________________________________________________________
         # for STOP icon
         self.but_debug_stop = but_debug_stop = QPushButton()
         but_debug_stop.setIcon(self.get_builtin_icon('SP_MediaStop'))
         but_debug_stop.setDisabled(True)
         layout_debug.addWidget(but_debug_stop)
-
-        # _____________________________________________________________________
-        # for RESET icon
-        self.but_debug_reset = but_debug_reset = QPushButton()
-        but_debug_reset.setIcon(self.get_builtin_icon('SP_DialogResetButton'))
-        but_debug_reset.setDisabled(True)
-        layout_debug.addWidget(but_debug_reset)
 
         # _____________________________________________________________________
         # for Plot All icon
@@ -168,8 +168,8 @@ class DockMonitor(QDockWidget):
 
     def setDebugState(self, state: bool = True):
         self.but_debug_play.setEnabled(state)
+        self.but_debug_pause.setEnabled(state)
         self.but_debug_stop.setEnabled(state)
-        self.but_debug_reset.setEnabled(state)
         self.but_debug_plot.setEnabled(state)
 
     def setButtonStatus(self, name: str, state: bool):

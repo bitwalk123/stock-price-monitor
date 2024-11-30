@@ -48,6 +48,7 @@ class WebInfoRakuten:
         '三菱ＵＦＪフィナンシャルＧ': '8306'
     }
 
+    dir_config = 'conf'
     dir_result = 'results'  # 取得した株価情報 (pickle) の保存先
 
     dt_now = datetime.datetime.now()
@@ -72,6 +73,9 @@ class WebInfoRakuten:
 
     def __init__(self):
         self.ticker_target = ''
+
+    def getConfigDir(self) -> str:
+        return self.dir_config
 
     def getPickleDir(self) -> str:
         return self.dir_result

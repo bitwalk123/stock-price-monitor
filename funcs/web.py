@@ -96,7 +96,7 @@ def do_login(driver: webdriver.Firefox, info: WebInfoRakuten) -> bool:
     :param info:
     :return:
     """
-    obj_login = get_login_info()
+    obj_login = get_login_info(info)
     # login account
     entry_login = driver.find_element(
         By.ID,
