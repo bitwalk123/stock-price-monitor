@@ -7,6 +7,7 @@ from PySide6.QtWidgets import QMainWindow
 from selenium import webdriver
 from selenium.common import WebDriverException
 
+from debug import DebugObj
 from process.proc_11_start import Proc11Start
 from process.proc_12_monitor import Proc12Monitor
 from process.proc_13_stop import Proc13Stop
@@ -23,7 +24,7 @@ class MainMonitor(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.debug = False  # debug flag
+        self.debug: DebugObj | None = None  # debug object
         self.df = pd.DataFrame()
         # _____________________________________________________________________
         # thread pool
@@ -78,7 +79,7 @@ class MainMonitor(QMainWindow):
         self.setStatusBar(statusbar)
 
         # _____________________________________________________________________
-        # browser initialization
+        # Browser initialization
         self.driver = webdriver.Firefox()
         # web handling
         self.p_start: Proc11Start | None = None
@@ -96,63 +97,37 @@ class MainMonitor(QMainWindow):
         event.accept()  # let the window close
 
     # _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-    #  DEBUG related
+    #  DebugObj
     def on_debug(self, state: bool):
-        self.debug = state
+        if state:
+            self.debug = DebugObj(self.info, self.chart)
+        else:
+            self.debug = None
 
     def on_debug_csv(self, filename: str):
-        if not self.debug:
+        if self.debug is None:
             return
         if filename == '':
             return
-        if len(self.df) == 0:
-            return
-
-        df = pd.read_csv(filename, encoding='cp932')
-        col_order = '注文番号'
-        col_dt = '注文日時'
-        dt = self.df.index[0]
-        year = dt.year
-        ser_dt = pd.to_datetime(['%d/%s' % (year, s) for s in df[col_dt]])
-        col_buysell = '売買'
-        col_unitprice = '約定単価[円]'
-        col_amount = '約定数量[株/口]'
-        df_trade = pd.DataFrame({
-            'time': ser_dt,
-            'buysell': df[col_buysell],
-            'unitprice': df[col_unitprice],
-            'amount': df[col_amount],
-        })
-        df_trade.index = df[col_order]
-        df_trade.index.name = ''
-        df_trade.sort_index(inplace=True)
-
-        pd.set_option('display.max_rows', None)
-        pd.set_option('display.max_columns', None)
-        print(df_trade)
-        self.chart.setBuySell(df_trade)
+        self.debug.readCSV(filename)
 
     def on_debug_pickle(self, filename: str):
-        if not self.debug:
+        if self.debug is None:
             return
         if filename == '':
             return
-
-        self.df = pd.read_pickle(filename)
-        dt = self.df.index[0]
-        self.info.setYMD(dt)
+        self.debug.readPickle(filename)
         self.dock.setDebugState()
 
     def on_debug_play(self):
-        if not self.debug:
+        if self.debug is None:
             return
-
-        self.chart.plot(self.df)
+        self.debug.play()
 
     def on_debug_replay(self):
-        if not self.debug:
+        if self.debug is None:
             return
-        pass
+        self.debug.replay()
 
     # _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     #  START PROCESS
