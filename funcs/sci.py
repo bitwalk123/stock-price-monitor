@@ -4,8 +4,10 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import make_smoothing_spline
 
+TZDELTA = 9 * 60 * 60  # 時差
 
-def get_smoothing(df: pd.DataFrame, l=6) -> pd.DataFrame:
+
+def get_smoothing(df: pd.DataFrame) -> pd.DataFrame:
     """Get B-spline smoothing data
 
     :param df:
@@ -14,10 +16,9 @@ def get_smoothing(df: pd.DataFrame, l=6) -> pd.DataFrame:
     """
     if len(df) < 6:
         return pd.DataFrame()
-    delta = 9 * 60 * 60  # 時差
-    x = np.array([t.timestamp() - delta for t in df.index])
+    x = np.array([t.timestamp() - TZDELTA for t in df.index])
     y = df['Price'].values
-    spl = make_smoothing_spline(x, y, lam=10 ** l)
+    spl = make_smoothing_spline(x, y)
 
     n = len(df)
     ts1 = x[0]

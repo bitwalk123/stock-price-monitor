@@ -71,6 +71,7 @@ class ChartTechnical(FigureCanvas):
         # ---------------------------------------------------------------------
         #  PLOT
         # ---------------------------------------------------------------------
+        """
         # Raw data line
         for df_half in [df1, df2]:
             if len(df_half) > 0:
@@ -78,8 +79,9 @@ class ChartTechnical(FigureCanvas):
                     df_half,
                     linewidth=0.75,
                     color='gray',
-                    alpha=0.75
+                    alpha=0.5
                 )
+        """
 
         # _____________________________________________________________________
         # Smoothed data line
@@ -87,7 +89,7 @@ class ChartTechnical(FigureCanvas):
             if len(df_s) > 0:
                 self.ax.plot(
                     df_s,
-                    linewidth=1,
+                    linewidth=0.5,
                     color='black'
                 )
 

@@ -62,4 +62,4 @@ class DebugObj(QObject):
 
     def play(self):
         self.timer.timeout.connect(self.loop_play)
-        self.timer.start(500)
+        self.timer.start(100)
