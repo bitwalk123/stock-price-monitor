@@ -44,14 +44,6 @@ class WebInfoRakuten:
         'home': 'ホーム | 楽天証券[PC]',
         'login': '総合口座ログイン | 楽天証券',
     }
-    """
-    ticker = {
-        '東京エレクトロン': '8035',
-        'ＮＦ日経レバ': '1570',
-        'ＳＣＲＥＥＮホールディングス': '7735',
-        '三菱ＵＦＪフィナンシャルＧ': '8306'
-    }
-    """
 
     dir_config = 'conf'
     dir_result = 'results'  # 取得した株価情報 (pickle) の保存先
@@ -69,15 +61,12 @@ class WebInfoRakuten:
     # y軸のスケール固定化
     yaxis_scale_fixed = False
 
-    # 評価用指標の表示
-    eval_index = False
-    threshold_mtm = 15
-
     # 信用取引株の数量
     num_shares = '100'
 
     def __init__(self):
         self.ticker_target = ''
+
         # 銘柄リスト
         conf_ticker = 'ticker.json'
         file_json = os.path.join(self.getConfigDir(), conf_ticker)
