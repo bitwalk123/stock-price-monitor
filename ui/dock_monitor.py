@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
 
 from structs.web_info import WebInfoRakuten
 from widgets.buttons import TradingButton
-from widgets.combos import ComboBox
+from widgets.combos import ComboBoxTicker
 
 
 class DockMonitor(QDockWidget):
@@ -96,7 +96,7 @@ class DockMonitor(QDockWidget):
 
         # _____________________________________________________________________
         # combobox for tickers
-        self.combo_ticker = combo_ticker = ComboBox(info)
+        self.combo_ticker = combo_ticker = ComboBoxTicker(info)
         combo_ticker.setEnabled(True)
         layout.addWidget(combo_ticker, stretch=1)
 

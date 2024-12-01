@@ -7,12 +7,12 @@ def set_combo_status(combo: QComboBox, status: bool = True):
     combo.setEnabled(status)
 
 
-class ComboBox(QComboBox):
+class ComboBoxTicker(QComboBox):
     def __init__(self, info: WebInfoRakuten):
         super().__init__()
-        self.info = info
-        self.addItems(info.ticker.keys())
+        self.dict_ticker = info.getTicker()
+        self.addItems(list(self.dict_ticker.keys()))
         self.setEnabled(False)
 
     def currentTicker(self) -> str:
-        return self.info.ticker[self.currentText()]
+        return self.dict_ticker[self.currentText()]
