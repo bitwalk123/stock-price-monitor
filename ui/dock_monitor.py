@@ -22,8 +22,10 @@ class DockMonitor(QDockWidget):
     clickedStop = Signal()
     csvSelected = Signal(str)
     debugEnabled = Signal(bool)
+    debugPause = Signal()
     debugPlay = Signal()
     debugPlot = Signal()
+    debugStop = Signal()
     pickleSelected = Signal(str)
 
     def __init__(self, info: WebInfoRakuten):
@@ -76,6 +78,7 @@ class DockMonitor(QDockWidget):
         # for PAUSE icon
         self.but_debug_pause = but_debug_pause = QPushButton()
         but_debug_pause.setIcon(self.get_builtin_icon('SP_MediaPause'))
+        but_debug_pause.clicked.connect(self.debugPause.emit)
         but_debug_pause.setDisabled(True)
         layout_debug.addWidget(but_debug_pause)
 
@@ -83,6 +86,7 @@ class DockMonitor(QDockWidget):
         # for STOP icon
         self.but_debug_stop = but_debug_stop = QPushButton()
         but_debug_stop.setIcon(self.get_builtin_icon('SP_MediaStop'))
+        but_debug_stop.clicked.connect(self.debugStop.emit)
         but_debug_stop.setDisabled(True)
         layout_debug.addWidget(but_debug_stop)
 

@@ -57,7 +57,9 @@ class MainMonitor(QMainWindow):
         dock.clickedStop.connect(self.on_stop)
         dock.csvSelected.connect(self.on_debug_csv)
         dock.debugEnabled.connect(self.on_debug)
+        dock.debugPause.connect(self.on_debug_pause)
         dock.debugPlay.connect(self.on_debug_play)
+        dock.debugStop.connect(self.on_debug_stop)
         dock.debugPlot.connect(self.on_debug_plot)
         dock.pickleSelected.connect(self.on_debug_pickle)
         self.addDockWidget(
@@ -119,6 +121,11 @@ class MainMonitor(QMainWindow):
         self.debug.readPickle(filename)
         self.dock.setDebugState()
 
+    def on_debug_pause(self):
+        if self.debug is None:
+            return
+        self.debug.pause()
+
     def on_debug_play(self):
         if self.debug is None:
             return
@@ -128,6 +135,11 @@ class MainMonitor(QMainWindow):
         if self.debug is None:
             return
         self.debug.plot()
+
+    def on_debug_stop(self):
+        if self.debug is None:
+            return
+        self.debug.stop()
 
     # _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     #  START PROCESS
