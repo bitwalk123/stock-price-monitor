@@ -1,5 +1,3 @@
-import datetime
-
 import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
 from matplotlib import dates as mdates
@@ -16,9 +14,13 @@ from funcs.plot import (
     refresh_draw,
     set_xaxis_limits,
 )
-from funcs.sci import get_smoothing, resample_1m_ohlc, get_resample_1sec, resample_3m_ohlc
+from funcs.sci import (
+    get_smoothing,
+    resample_1m_ohlc,
+    resample_5m_ohlc,
+)
 from structs.web_info import WebInfoRakuten
-from tech.psar import PSAR
+from tech.psar import parabolic_sar
 
 FONT_PATH = 'fonts/RictyDiminished-Regular.ttf'
 
@@ -32,7 +34,7 @@ class ChartTechnical(FigureCanvas):
     def __init__(self, info: WebInfoRakuten):
         self.fig = Figure()
         super().__init__(self.fig)
-        self.setFixedSize(1200, 700)
+        self.setFixedSize(1400, 800)
 
         self.info = info
         self.df = pd.DataFrame()
@@ -75,19 +77,6 @@ class ChartTechnical(FigureCanvas):
                     alpha=0.75
                 )
 
-        """
-        df1_1s = get_resample_1sec(df1)
-        df2_1s = get_resample_1sec(df2)
-        for df_half in [df1_1s, df2_1s]:
-            if len(df_half) > 0:
-                self.ax.plot(
-                    df_half,
-                    linewidth=0.5,
-                    color='gray',
-                    alpha=0.75
-                )
-        """
-
         # _____________________________________________________________________
         # Smoothed data line
         df1_s = get_smoothing(df1)
@@ -106,13 +95,7 @@ class ChartTechnical(FigureCanvas):
         df2_ohlc_1m = resample_1m_ohlc(df2)
         for df_ohlc in [df1_ohlc_1m, df2_ohlc_1m]:
             if len(df_ohlc) >= 3:
-                indic = PSAR()
-                df_ohlc['PSAR'] = df_ohlc.apply(lambda x: indic.calcPSAR(x['High'], x['Low']), axis=1)
-                # Add supporting data
-                df_ohlc['EP'] = indic.list_ep
-                df_ohlc['Trend'] = indic.list_trend
-                df_ohlc['AF'] = indic.list_af
-
+                parabolic_sar(df_ohlc)
                 bull = df_ohlc.loc[df_ohlc['Trend'] == 1]['PSAR']
                 self.ax.scatter(
                     x=bull.index,
@@ -132,32 +115,28 @@ class ChartTechnical(FigureCanvas):
                     edgecolors='blue'
                 )
 
-        df1_ohlc_3m = resample_3m_ohlc(df1_s)
-        df2_ohlc_3m = resample_3m_ohlc(df2_s)
-        for df_ohlc in [df1_ohlc_3m, df2_ohlc_3m]:
+        df1_ohlc_5m = resample_5m_ohlc(df1_s)
+        df2_ohlc_5m = resample_5m_ohlc(df2_s)
+        for df_ohlc in [df1_ohlc_5m, df2_ohlc_5m]:
             if len(df_ohlc) >= 3:
-                indic = PSAR()
-                df_ohlc['PSAR'] = df_ohlc.apply(lambda x: indic.calcPSAR(x['High'], x['Low']), axis=1)
-                # Add supporting data
-                df_ohlc['EP'] = indic.list_ep
-                df_ohlc['Trend'] = indic.list_trend
-                df_ohlc['AF'] = indic.list_af
-
+                parabolic_sar(df_ohlc)
                 bull = df_ohlc.loc[df_ohlc['Trend'] == 1]['PSAR']
                 self.ax.scatter(
                     x=bull.index,
                     y=bull,
                     marker='^',
-                    s=10,
-                    c='darkmagenta',
+                    s=30,
+                    facecolors='none',
+                    edgecolors='darkmagenta'
                 )
                 bear = df_ohlc.loc[df_ohlc['Trend'] == 0]['PSAR']
                 self.ax.scatter(
                     x=bear.index,
                     y=bear,
                     marker='v',
-                    s=10,
-                    c='darkcyan',
+                    s=30,
+                    facecolors='none',
+                    edgecolors='darkcyan'
                 )
 
         # _____________________________________________________________________

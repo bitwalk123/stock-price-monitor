@@ -1,5 +1,7 @@
 from collections import deque
 
+import pandas as pd
+
 
 class PSAR:
     # Reference:
@@ -110,3 +112,11 @@ class PSAR:
                 self.point_extreme = low
 
         return psar
+
+
+def parabolic_sar(df:pd.DataFrame):
+    indic = PSAR()
+    df['PSAR'] = df.apply(lambda x: indic.calcPSAR(x['High'], x['Low']), axis=1)
+    df['EP'] = indic.list_ep
+    df['Trend'] = indic.list_trend
+    df['AF'] = indic.list_af
