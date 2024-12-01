@@ -16,8 +16,9 @@ from funcs.plot import (
     refresh_draw,
     set_xaxis_limits,
 )
-from funcs.sci import get_smoothing
+from funcs.sci import get_smoothing, resample_1m_ohlc, get_resample_1sec, resample_3m_ohlc
 from structs.web_info import WebInfoRakuten
+from tech.psar import PSAR
 
 FONT_PATH = 'fonts/RictyDiminished-Regular.ttf'
 
@@ -35,7 +36,7 @@ class ChartTechnical(FigureCanvas):
 
         self.info = info
         self.df = pd.DataFrame()
-        self.df_order = pd.DataFrame() # 実際に取引した結果
+        self.df_order = pd.DataFrame()  # 実際に取引した結果
 
         # font setting
         fm.fontManager.addfont(FONT_PATH)
@@ -58,20 +59,12 @@ class ChartTechnical(FigureCanvas):
         clear_axes(self.fig)
 
         # ---------------------------------------------------------------------
-        #  DATA PREP.
+        #  PLOT
         # ---------------------------------------------------------------------
         # Morning and Afternoon session
         df1 = df[df.index <= self.info.dt_noon1]
         df2 = df[df.index >= self.info.dt_noon2]
 
-        # Smoothing
-        df1_s = get_smoothing(df1)
-        df2_s = get_smoothing(df2)
-
-        # ---------------------------------------------------------------------
-        #  PLOT
-        # ---------------------------------------------------------------------
-        """
         # Raw data line
         for df_half in [df1, df2]:
             if len(df_half) > 0:
@@ -79,18 +72,92 @@ class ChartTechnical(FigureCanvas):
                     df_half,
                     linewidth=0.75,
                     color='gray',
-                    alpha=0.5
+                    alpha=0.75
+                )
+
+        """
+        df1_1s = get_resample_1sec(df1)
+        df2_1s = get_resample_1sec(df2)
+        for df_half in [df1_1s, df2_1s]:
+            if len(df_half) > 0:
+                self.ax.plot(
+                    df_half,
+                    linewidth=0.5,
+                    color='gray',
+                    alpha=0.75
                 )
         """
 
         # _____________________________________________________________________
         # Smoothed data line
+        df1_s = get_smoothing(df1)
+        df2_s = get_smoothing(df2)
+
         for df_s in [df1_s, df2_s]:
             if len(df_s) > 0:
                 self.ax.plot(
-                    df_s,
-                    linewidth=0.5,
+                    df_s['Price'],
+                    linewidth=0.75,
                     color='black'
+                )
+
+        # 1min OHLC
+        df1_ohlc_1m = resample_1m_ohlc(df1)
+        df2_ohlc_1m = resample_1m_ohlc(df2)
+        for df_ohlc in [df1_ohlc_1m, df2_ohlc_1m]:
+            if len(df_ohlc) >= 3:
+                indic = PSAR()
+                df_ohlc['PSAR'] = df_ohlc.apply(lambda x: indic.calcPSAR(x['High'], x['Low']), axis=1)
+                # Add supporting data
+                df_ohlc['EP'] = indic.list_ep
+                df_ohlc['Trend'] = indic.list_trend
+                df_ohlc['AF'] = indic.list_af
+
+                bull = df_ohlc.loc[df_ohlc['Trend'] == 1]['PSAR']
+                self.ax.scatter(
+                    x=bull.index,
+                    y=bull,
+                    marker='o',
+                    s=30,
+                    facecolors='none',
+                    edgecolors='red'
+                )
+                bear = df_ohlc.loc[df_ohlc['Trend'] == 0]['PSAR']
+                self.ax.scatter(
+                    x=bear.index,
+                    y=bear,
+                    marker='o',
+                    s=30,
+                    facecolors='none',
+                    edgecolors='blue'
+                )
+
+        df1_ohlc_3m = resample_3m_ohlc(df1_s)
+        df2_ohlc_3m = resample_3m_ohlc(df2_s)
+        for df_ohlc in [df1_ohlc_3m, df2_ohlc_3m]:
+            if len(df_ohlc) >= 3:
+                indic = PSAR()
+                df_ohlc['PSAR'] = df_ohlc.apply(lambda x: indic.calcPSAR(x['High'], x['Low']), axis=1)
+                # Add supporting data
+                df_ohlc['EP'] = indic.list_ep
+                df_ohlc['Trend'] = indic.list_trend
+                df_ohlc['AF'] = indic.list_af
+
+                bull = df_ohlc.loc[df_ohlc['Trend'] == 1]['PSAR']
+                self.ax.scatter(
+                    x=bull.index,
+                    y=bull,
+                    marker='^',
+                    s=10,
+                    c='darkmagenta',
+                )
+                bear = df_ohlc.loc[df_ohlc['Trend'] == 0]['PSAR']
+                self.ax.scatter(
+                    x=bear.index,
+                    y=bear,
+                    marker='v',
+                    s=10,
+                    c='darkcyan',
                 )
 
         # _____________________________________________________________________
