@@ -11,3 +11,4 @@ pysocks
 scipy
 selenium
 tomli
+wget
