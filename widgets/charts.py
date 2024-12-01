@@ -34,7 +34,7 @@ class ChartTechnical(FigureCanvas):
     def __init__(self, info: WebInfoRakuten):
         self.fig = Figure()
         super().__init__(self.fig)
-        self.setFixedSize(1400, 800)
+        self.setFixedSize(1500, 600)
 
         self.info = info
         self.df = pd.DataFrame()
@@ -63,11 +63,10 @@ class ChartTechnical(FigureCanvas):
         # ---------------------------------------------------------------------
         #  PLOT
         # ---------------------------------------------------------------------
+
         # Morning and Afternoon session
         df1 = df[df.index <= self.info.dt_noon1]
         df2 = df[df.index >= self.info.dt_noon2]
-
-        # Raw data line
         for df_half in [df1, df2]:
             if len(df_half) > 0:
                 self.ax.plot(
@@ -75,19 +74,6 @@ class ChartTechnical(FigureCanvas):
                     linewidth=0.75,
                     color='gray',
                     alpha=0.75
-                )
-
-        # _____________________________________________________________________
-        # Smoothed data line
-        df1_s = get_smoothing(df1)
-        df2_s = get_smoothing(df2)
-
-        for df_s in [df1_s, df2_s]:
-            if len(df_s) > 0:
-                self.ax.plot(
-                    df_s['Price'],
-                    linewidth=0.75,
-                    color='black'
                 )
 
         # 1min OHLC
@@ -115,8 +101,8 @@ class ChartTechnical(FigureCanvas):
                     edgecolors='blue'
                 )
 
-        df1_ohlc_5m = resample_5m_ohlc(df1_s)
-        df2_ohlc_5m = resample_5m_ohlc(df2_s)
+        df1_ohlc_5m = resample_5m_ohlc(df1)
+        df2_ohlc_5m = resample_5m_ohlc(df2)
         for df_ohlc in [df1_ohlc_5m, df2_ohlc_5m]:
             if len(df_ohlc) >= 3:
                 parabolic_sar(df_ohlc)
@@ -137,6 +123,17 @@ class ChartTechnical(FigureCanvas):
                     s=30,
                     facecolors='none',
                     edgecolors='darkcyan'
+                )
+
+        # Smoothed data line
+        df1_s = get_smoothing(df1)
+        df2_s = get_smoothing(df2)
+        for df_s in [df1_s, df2_s]:
+            if len(df_s) > 0:
+                self.ax.plot(
+                    df_s['Price'],
+                    linewidth=0.75,
+                    color='black'
                 )
 
         # _____________________________________________________________________

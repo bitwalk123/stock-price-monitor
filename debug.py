@@ -22,7 +22,7 @@ class DebugObj(QObject):
             self.chart.plot(self.df.iloc[0:self.counter + 1])
             self.counter += 1
         else:
-            self.timer.stop()
+            self.stop()
 
     def plot(self):
         self.chart.plot(self.df)
@@ -60,6 +60,16 @@ class DebugObj(QObject):
         dt = self.df.index[0]
         self.info.setYMD(dt)
 
+    def pause(self):
+        if self.timer.isActive():
+            self.timer.stop()
+
     def play(self):
         self.timer.timeout.connect(self.loop_play)
-        self.timer.start(100)
+        if not self.timer.isActive():
+            self.timer.start(100)
+
+    def stop(self):
+        if self.timer.isActive():
+            self.timer.stop()
+            self.counter = 0
