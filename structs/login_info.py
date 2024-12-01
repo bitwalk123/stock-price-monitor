@@ -1,6 +1,3 @@
-from PySide6.QtCore import QUrl
-
-
 class LoginInfo:
     def __init__(self, login_info: dict):
         self.login_info = login_info

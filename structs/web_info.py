@@ -1,6 +1,9 @@
 import datetime
+import os
+
 import pandas as pd
 
+from funcs.common import read_json
 from structs.enumtype import XAxisRange
 
 
@@ -41,12 +44,14 @@ class WebInfoRakuten:
         'home': 'ホーム | 楽天証券[PC]',
         'login': '総合口座ログイン | 楽天証券',
     }
+    """
     ticker = {
         '東京エレクトロン': '8035',
         'ＮＦ日経レバ': '1570',
         'ＳＣＲＥＥＮホールディングス': '7735',
         '三菱ＵＦＪフィナンシャルＧ': '8306'
     }
+    """
 
     dir_config = 'conf'
     dir_result = 'results'  # 取得した株価情報 (pickle) の保存先
@@ -73,12 +78,19 @@ class WebInfoRakuten:
 
     def __init__(self):
         self.ticker_target = ''
+        # 銘柄リスト
+        conf_ticker = 'ticker.json'
+        file_json = os.path.join(self.getConfigDir(), conf_ticker)
+        self.ticker = read_json(file_json)
 
     def getConfigDir(self) -> str:
         return self.dir_config
 
     def getPickleDir(self) -> str:
         return self.dir_result
+
+    def getTicker(self) -> dict:
+        return self.ticker
 
     def getTickerTarget(self) -> str:
         return self.ticker_target
