@@ -16,8 +16,7 @@ from funcs.plot import (
 )
 from funcs.sci import (
     get_smoothing,
-    resample_1m_ohlc,
-    resample_5m_ohlc,
+    resample_ohlc,
 )
 from structs.web_info import WebInfoRakuten
 from tech.psar import parabolic_sar
@@ -30,6 +29,9 @@ class ChartTechnical(FigureCanvas):
     YPAD = 10
     YMAJORTICK = 50
     YMINORTICK = 10
+    INTERVAL_1MIN = '1min'
+    INTERVAL_2MIN = '2min'
+    INTERVAL_3MIN = '3min'
 
     def __init__(self, info: WebInfoRakuten):
         self.fig = Figure()
@@ -77,8 +79,8 @@ class ChartTechnical(FigureCanvas):
                 )
 
         # 1min OHLC
-        df1_ohlc_1m = resample_1m_ohlc(df1)
-        df2_ohlc_1m = resample_1m_ohlc(df2)
+        df1_ohlc_1m = resample_ohlc(df1, self.INTERVAL_1MIN)
+        df2_ohlc_1m = resample_ohlc(df2, self.INTERVAL_1MIN)
         for df_ohlc in [df1_ohlc_1m, df2_ohlc_1m]:
             if len(df_ohlc) >= 3:
                 parabolic_sar(df_ohlc)
@@ -101,9 +103,9 @@ class ChartTechnical(FigureCanvas):
                     edgecolors='blue'
                 )
 
-        df1_ohlc_5m = resample_5m_ohlc(df1)
-        df2_ohlc_5m = resample_5m_ohlc(df2)
-        for df_ohlc in [df1_ohlc_5m, df2_ohlc_5m]:
+        df1_ohlc_2m = resample_ohlc(df1, self.INTERVAL_2MIN)
+        df2_ohlc_2m = resample_ohlc(df2, self.INTERVAL_2MIN)
+        for df_ohlc in [df1_ohlc_2m, df2_ohlc_2m]:
             if len(df_ohlc) >= 3:
                 parabolic_sar(df_ohlc)
                 bull = df_ohlc.loc[df_ohlc['Trend'] == 1]['PSAR']
@@ -111,7 +113,7 @@ class ChartTechnical(FigureCanvas):
                     x=bull.index,
                     y=bull,
                     marker='^',
-                    s=30,
+                    s=20,
                     facecolors='none',
                     edgecolors='darkmagenta'
                 )
@@ -120,10 +122,35 @@ class ChartTechnical(FigureCanvas):
                     x=bear.index,
                     y=bear,
                     marker='v',
-                    s=30,
+                    s=20,
                     facecolors='none',
                     edgecolors='darkcyan'
                 )
+        """
+        df1_ohlc_3m = resample_ohlc(df1, self.INTERVAL_3MIN)
+        df2_ohlc_3m = resample_ohlc(df2, self.INTERVAL_3MIN)
+        for df_ohlc in [df1_ohlc_3m, df2_ohlc_3m]:
+            if len(df_ohlc) >= 3:
+                parabolic_sar(df_ohlc)
+                bull = df_ohlc.loc[df_ohlc['Trend'] == 1]['PSAR']
+                self.ax.scatter(
+                    x=bull.index,
+                    y=bull,
+                    marker='*',
+                    s=20,
+                    facecolors='none',
+                    edgecolors='brown'
+                )
+                bear = df_ohlc.loc[df_ohlc['Trend'] == 0]['PSAR']
+                self.ax.scatter(
+                    x=bear.index,
+                    y=bear,
+                    marker='*',
+                    s=20,
+                    facecolors='none',
+                    edgecolors='darkgreen'
+                )
+        """
 
         # Smoothed data line
         df1_s = get_smoothing(df1)
