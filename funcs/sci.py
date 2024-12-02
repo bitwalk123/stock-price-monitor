@@ -22,7 +22,7 @@ def get_smoothing(df: pd.DataFrame) -> pd.DataFrame:
 
     x = np.array([t.timestamp() - TZDELTA for t in df.index])
     y = df['Price'].values
-    spl = make_smoothing_spline(x, y, lam=10**5)
+    spl = make_smoothing_spline(x, y, lam=10 ** 5)
 
     n = len(df)
     ts1 = x[0]
@@ -32,6 +32,7 @@ def get_smoothing(df: pd.DataFrame) -> pd.DataFrame:
     dt_index = pd.to_datetime([str(datetime.datetime.fromtimestamp(t)) for t in xs])
 
     return pd.DataFrame({'Price': ys}, index=dt_index)
+
 
 def get_resample_1sec(df: pd.DataFrame) -> pd.DataFrame:
     """Get B-spline smoothing data
@@ -55,7 +56,7 @@ def get_resample_1sec(df: pd.DataFrame) -> pd.DataFrame:
 
     return pd.DataFrame({'Price': ys}, index=dt_index)
 
-def resample_1m_ohlc(df: pd.DataFrame) -> pd.DataFrame:
+def resample_ohlc(df: pd.DataFrame, interval: str) -> pd.DataFrame:
     """Resample realtime data to 1 min OHLC data
 
     :param df:
@@ -64,35 +65,7 @@ def resample_1m_ohlc(df: pd.DataFrame) -> pd.DataFrame:
     if len(df) == 0:
         return pd.DataFrame()
 
-    df_ohlc = df['Price'].resample('1min').ohlc()
-    df_ohlc.columns = ['Open', 'High', 'Low', 'Close']
-
-    return df_ohlc
-
-def resample_3m_ohlc(df: pd.DataFrame) -> pd.DataFrame:
-    """Resample realtime data to 1 min OHLC data
-
-    :param df:
-    :return:
-    """
-    if len(df) == 0:
-        return pd.DataFrame()
-
-    df_ohlc = df['Price'].resample('3min').ohlc()
-    df_ohlc.columns = ['Open', 'High', 'Low', 'Close']
-
-    return df_ohlc
-
-def resample_5m_ohlc(df: pd.DataFrame) -> pd.DataFrame:
-    """Resample realtime data to 1 min OHLC data
-
-    :param df:
-    :return:
-    """
-    if len(df) == 0:
-        return pd.DataFrame()
-
-    df_ohlc = df['Price'].resample('5min').ohlc()
+    df_ohlc = df['Price'].resample(interval).ohlc()
     df_ohlc.columns = ['Open', 'High', 'Low', 'Close']
 
     return df_ohlc
